@@ -1,0 +1,17 @@
+---
+- hosts: redmine
+  vars_files: 
+    - ./vars/redmine.yml
+  roles:
+    - { role: commons }
+    - { role: geerlingguy.mysql }
+    - { role: geerlingguy.nginx }
+    - { role: redmine }
+
+- hosts: storage
+  vars_files: 
+    - ./vars/storage.yml
+  roles:
+    - { role: commons }
+
+

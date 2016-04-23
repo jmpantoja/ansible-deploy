@@ -1,0 +1,31 @@
+---
+- name: Create directorios
+  file: path={{ item }} state=directory owner=vagrant group=www-data mode=0775 recurse=yes
+  with_items:
+    - /var/run/thin
+    - /var/log/thin
+    - /var/log/nginx
+
+
+- name: Permisos para el fichero de log
+  file: path={{ redmine_path }}/log/production.log owner=vagrant group=www-data
+  
+
+- name: Directorio para la config de thin
+  file: path="/etc/thin/" owner=vagrant group=www-data state=directory
+
+- name: Configurar Redmine en Thin
+  template: src=redmine.yml.j2 dest="/etc/thin/redmine.yml"
+
+- name: restart thin
+  shell: /usr/bin/ruby2.1 /usr/local/bin/thin start --all -c /etc/thin/
+
+- name: restart nginx
+  service: name=nginx state=restarted
+
+- name: Crea la entrada en crontab
+  cron: name="Init thin" 
+        special_time=reboot
+        job="/usr/bin/ruby2.1 /usr/local/bin/thin start --all -c /etc/thin/"
+
+# quizas hay que hacer thin start -C /etc/thin

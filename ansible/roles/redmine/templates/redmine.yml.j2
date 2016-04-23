@@ -1,0 +1,16 @@
+---
+chdir: "{{ redmine_path }}"
+environment: production
+timeout: 30
+log: "/var/log/thin/redmine.log"
+pid: "/var/run/thin/redmine.pid"
+max_conns: 1024
+max_persistent_conns: 512
+require: []
+wait: 30
+socket: "/var/run/thin/thin.sock"
+daemonize: true
+user: root
+group: root
+servers: 1
+prefix: "/"

@@ -1,0 +1,3 @@
+---
+- name: restart thin
+  service: name=thin state=restarted enabled=yes

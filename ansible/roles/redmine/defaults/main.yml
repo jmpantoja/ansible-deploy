@@ -1,0 +1,34 @@
+---
+db_host: "127.0.0.1"
+db_name: "redmine"
+db_username: "admin"
+db_password: "unaContrasenia"
+
+mysql_root_password_update: true
+
+mysql_databases:
+  - name: "{{ db_name }}"
+    encoding: utf8
+    collation: utf8_general_ci
+
+mysql_users:
+  - name: "{{ db_username }}"
+    host: "%"
+    password: "{{ db_password }}"
+    priv: "{{ db_name }}.*:ALL"
+
+
+redmine_domain: "name.domain"
+redmine_files: "{{ redmine_path }}/files"
+redmine_lang: "es"
+redmine_path: "/opt/redmine"
+redmine_proxy: "/etc/nginx/conf.d/redmine_proxy"
+redmine_public: "{{ redmine_path }}/public"
+redmine_version: "3.2.1"
+
+target_dump: "/opt/redmine.sql.bz2"
+target_files: "/opt/redmine.tar.bz2"
+
+ssl_cert: "/etc/ssl/local/server.crt"
+ssl_key: "/etc/ssl/local/server.key"
+

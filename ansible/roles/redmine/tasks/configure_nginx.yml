@@ -1,0 +1,14 @@
+---
+- name: Copiar Proxy
+  copy: src=proxy dest="{{ redmine_proxy }}"
+
+- name: Configurar sitio
+  template: src=site.j2 dest="/etc/nginx/sites-available/redmine"
+
+- name: Activar sitio
+  file: src=/etc/nginx/sites-available/redmine dest=/etc/nginx/sites-enabled/redmine state=link
+
+- name: Borrar default
+  file: path=/etc/nginx/sites-enabled/default state=absent
+
+

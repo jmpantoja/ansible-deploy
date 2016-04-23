@@ -1,0 +1,20 @@
+#!/usr/bin/env ansible-playbook
+## vim:ft=ansible :
+
+---
+php_ppa: "ppa:ondrej/php"
+php_packages:
+  - php7.0-common
+  - php7.0-cli
+  - php7.0-intl
+  - php7.0-curl
+  - php7.0-cgi
+  - php7.0-fpm
+  - php7.0-mysql
+  - php7.0-gd
+php_timezone: Asia/Taipei
+php_upload_max_filesize: "20M"
+php_post_max_size: "20M"
+php_memory_limit: "1024M"
+php_owner: nginx
+php_group: nginx

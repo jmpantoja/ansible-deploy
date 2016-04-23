@@ -1,0 +1,21 @@
+---
+redmine_version: 3.2.1
+redmine_domain: redmine.jump.int
+
+db_name: redmine
+db_host: localhost
+db_username: redmine
+db_password: r3dm1n3
+
+mysql_databases:
+  - name: "{{ db_name }}"
+    encoding: utf8
+    collation: utf8_general_ci
+
+mysql_users:
+  - name: "{{ db_username }}"
+    host: "%"
+    password: "{{ db_password }}"
+    priv: "{{ db_name }}.*:ALL"
+
+nginx: true

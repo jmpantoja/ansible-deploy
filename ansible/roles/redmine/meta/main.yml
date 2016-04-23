@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  description: "Install and Upgrade redmine"
+  license: GPLv3
+  min_ansible_version: 1.7
+  platforms:
+  - name: Ubuntu
+    versions:
+    - all
+  - name: Debian
+    versions:
+    - all
+  categories:
+  - development
+dependencies: 
+  - { role: geerlingguy.mysql }
+  

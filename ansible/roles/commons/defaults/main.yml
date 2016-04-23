@@ -1,0 +1,23 @@
+---
+server:
+  packages: 
+    - curl
+    - apt-transport-https 
+    - wget
+    - python-software-properties
+    - vim
+    - git-core 
+    - git
+    - zlib1g-dev 
+    - build-essential
+    - libssl-dev 
+    - libreadline-dev 
+    - libyaml-dev 
+    - libxml2-dev 
+    - libxslt1-dev 
+    - libcurl4-openssl-dev 
+    - python-software-properties 
+    - libffi-dev
+    
+  timezone: UTC
+  locale: en_US.UTF-8    
