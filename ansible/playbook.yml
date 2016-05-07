@@ -7,11 +7,18 @@
     - { role: geerlingguy.mysql }
     - { role: geerlingguy.nginx }
     - { role: redmine }
+    
 
-- hosts: storage
+- hosts: monitoring
+  gather_facts: yes
   vars_files: 
-    - ./vars/storage.yml
+    - ./vars/monitoring.yml
+
   roles:
     - { role: commons }
-
-
+    - { role: elk }
+    
+- hosts: web
+  roles:
+    - { role: commons }
+    - { role: filebeat }

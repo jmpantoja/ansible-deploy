@@ -1,7 +1,3 @@
 ---
 - src: geerlingguy.mysql
-- src: geerlingguy.ruby
 - src: geerlingguy.nginx
-- src: geerlingguy.nodejs
-- src: chusiang.php7
-- src: krahser.redmine

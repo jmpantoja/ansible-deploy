@@ -1,0 +1,3 @@
+---
+# Used only for Debian/Ubuntu installation, as the -t option for apt.
+server_name: "monitoring.jump.int"

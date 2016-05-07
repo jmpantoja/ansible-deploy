@@ -2,9 +2,9 @@
 
 [![Build Status](https://travis-ci.org/geerlingguy/ansible-role-nginx.svg?branch=master)](https://travis-ci.org/geerlingguy/ansible-role-nginx)
 
-Installs Nginx on RedHat/CentOS or Debian/Ubuntu linux servers.
+Installs Nginx on RedHat/CentOS or Debian/Ubuntu Linux, or FreeBSD servers.
 
-This role installs and configures the latest version of Nginx from the Nginx yum repository (on RedHat-based systems) or via apt (on Debian-based systems). You will likely need to do extra setup work after this role has installed Nginx, like adding your own [virtualhost].conf file inside `/etc/nginx/conf.d/`, describing the location and options to use for your particular website.
+This role installs and configures the latest version of Nginx from the Nginx yum repository (on RedHat-based systems) or via apt (on Debian-based systems) or pkgng (on FreeBSD systems). You will likely need to do extra setup work after this role has installed Nginx, like adding your own [virtualhost].conf file inside `/etc/nginx/conf.d/`, describing the location and options to use for your particular website.
 
 ## Requirements
 
@@ -74,6 +74,10 @@ Nginx keepalive settings. Timeout should be set higher (10s+) if you have more p
     nginx_client_max_body_size: "64m"
 
 This value determines the largest file upload possible, as uploads are passed through Nginx before hitting a backend like `php-fpm`. If you get an error like `client intended to send too large body`, it means this value is set too low.
+
+    nginx_server_names_hash_bucket_size: "64"
+
+If you have many server names, or have very long server names, you might get an Nginx error on startup requiring this value to be increased.
 
     nginx_proxy_cache_path: ""
 
