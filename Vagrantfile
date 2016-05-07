@@ -32,33 +32,65 @@ Vagrant.configure("2") do |config|
   end
   
 
-  config.vm.define "storage", autostart: false do |storage|
-    storage.vm.provider :virtualbox do |v|
-        v.name = "storage"
+  config.vm.define "monitoring", autostart: false do |monitoring|
+
+    monitoring.vm.provider :virtualbox do |v|
+        v.name = "monitoring"
         v.customize [
             "modifyvm", :id,
-            "--name", "storage",
+            "--name", "monitoring",
+            "--memory", 1024,
+            "--natdnshostresolver1", "on",
+            "--cpus", 1,
+        ]
+    end  
+ 
+    monitoring.vm.box = "ubuntu/trusty64"
+    monitoring.vm.box_check_update = true
+    monitoring.vm.hostname = "monitoring"
+    
+    monitoring.vm.network "private_network", ip: "192.168.50.20"
+    monitoring.vm.network "public_network", use_dhcp_assigned_default_route: true
+	
+    monitoring.vm.synced_folder ".", "/vagrant", type: "nfs"
+    monitoring.vm.synced_folder "/deploy", "/deploy", type: "nfs", mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
+
+    monitoring.vm.provision "ansible" do |ansible|
+	  ansible.sudo = true
+      ansible.playbook = "ansible/playbook.yml"
+      ansible.inventory_path = "./ansible/inventory"
+      ansible.limit = "monitoring"
+    end
+  end  
+
+  config.vm.define "web", autostart: false do |web|
+
+    web.vm.provider :virtualbox do |v|
+        v.name = "web"
+        v.customize [
+            "modifyvm", :id,
+            "--name", "web",
             "--memory", 512,
             "--natdnshostresolver1", "on",
             "--cpus", 1,
         ]
     end  
  
-    storage.vm.box = "debian/jessie64"
-    storage.vm.box_check_update = true
-    storage.vm.hostname = "storage"
+    web.vm.box = "ubuntu/trusty64"
+    web.vm.box_check_update = true
+    web.vm.hostname = "web"
     
-    storage.vm.network "private_network", ip: "192.168.50.20"
-    storage.vm.network "public_network", use_dhcp_assigned_default_route: true
+    web.vm.network "private_network", ip: "192.168.50.59"
+    web.vm.network "public_network", use_dhcp_assigned_default_route: true
 	
-    storage.vm.synced_folder ".", "/vagrant", type: "nfs"
-    storage.vm.synced_folder "/CODE", "/CODE", type: "nfs", mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
+    web.vm.synced_folder ".", "/vagrant", type: "nfs"
+    web.vm.synced_folder "/deploy", "/deploy", type: "nfs", mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
 
-    storage.vm.provision "ansible" do |ansible|
+    web.vm.provision "ansible" do |ansible|
 	  ansible.sudo = true
       ansible.playbook = "ansible/playbook.yml"
       ansible.inventory_path = "./ansible/inventory"
-      ansible.limit = "storage"
+      ansible.limit = "web"
     end
   end  
   

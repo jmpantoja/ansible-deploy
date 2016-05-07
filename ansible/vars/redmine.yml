@@ -1,4 +1,18 @@
 ---
+logstash_forwarder_logstash_server: monitoring.jump.int
+
+logstash_forwarder_files:
+  - paths:
+      - /var/log/messages
+      - /var/log/auth.log
+      - /var/log/nginx/redmine.jump.int.access
+      - /var/log/nginx/redmine.jump.int.error
+      - /var/log/this/redmine.0.log
+      - /opt/redmine/log/production.log
+      
+    fields:
+      type: syslog
+
 redmine_version: 3.2.1
 redmine_domain: redmine.jump.int
 

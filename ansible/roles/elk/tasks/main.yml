@@ -1,0 +1,107 @@
+---
+- name: Repositorios
+  apt_repository: repo="{{ item }}" state=present
+  with_items:
+    - "ppa:webupd8team/java"
+    - "deb http://packages.elastic.co/elasticsearch/2.x/debian stable main"
+    - "deb http://packages.elastic.co/kibana/4.4/debian stable main" 
+    - "deb http://packages.elastic.co/logstash/2.2/debian stable main" 
+  
+- name: Apt keys
+  apt_key: url=https://packages.elastic.co/GPG-KEY-elasticsearch state=present
+
+- name: Update apt
+  apt: update_cache=yes cache_valid_time=0
+  
+- name: Automatically select the Oracle License
+  debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+#  shell: echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+
+- name: Packages
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - oracle-java8-installer    
+    - elasticsearch
+    - kibana
+    - nginx
+    - apache2-utils 
+    - logstash
+    - unzip
+    
+- name: Copy elasticsearch configuration in place.
+  template:
+    src: elasticsearch.yml.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+    owner: root
+    group: elasticsearch
+    mode: 0755
+  notify:
+    - reload elasticsearch
+    - update-rc elasticsearch
+    
+- name: Copy kibana configuration in place.
+  template:
+    src: kibana.yml.j2
+    dest: /opt/kibana/config/kibana.yml
+    owner: root
+    group: root
+    mode: 0755
+  notify:
+    - reload kibana
+    - update-rc kibana
+    
+- name: Copy nginx default configuration in place.
+  template:
+    src: default.j2
+    dest: /etc/nginx/sites-available/default
+    owner: root
+    group: root
+    mode: 0755
+  notify:
+    - reload nginx
+  
+- name: Copy logstash input configuration in place.
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: 0755
+  with_items:    
+    - {src: 02-beats-input.conf.j2, dest: /etc/logstash/conf.d/02-beats-input.conf }
+    - {src: 10-syslog-filter.conf.j2, dest: /etc/logstash/conf.d/10-syslog-filter.conf }
+    - {src: 30-elasticsearch-output.conf.j2, dest: /etc/logstash/conf.d/30-elasticsearch-output.conf }
+  notify:
+    - reload logstash
+    - update-rc logstash
+  
+- name: reload elasticsearch
+  service: name=elasticsearch state=started enabled=yes
+  
+- name: reload logstash
+  service: name=logstash state=started enabled=yes
+
+- name: wait  
+  wait_for: host=localhost port=9200 state=started delay=10 
+  
+- name: Download Kibana Dashboards
+  unarchive: src=https://download.elastic.co/beats/dashboards/beats-dashboards-1.1.0.zip dest=/tmp copy=no
+
+- name: Install Kibana Dashboards
+  shell: ./load.sh chdir=/tmp/beats-dashboards-1.1.0
+  
+- name: Filebeat Index Template
+  get_url: 
+    url: https://gist.githubusercontent.com/thisismitch/3429023e8438cc25b86c/raw/d8c479e2a1adcea8b1fe86570e42abab0f10f364/filebeat-index-template.json 
+    dest: /tmp/filebeat-index-template.json 
+    mode: 0755
+
+- name: Install FileBeat
+  shell: curl -XPUT 'http://localhost:9200/_template/filebeat?pretty' -d@filebeat-index-template.json chdir=/tmp
+     
+- name: reload kibana
+  service: name=kibana state=started enabled=yes 
+  
+- name: reload nginx
+  service: name=nginx state=reload enabled=yes
+  
