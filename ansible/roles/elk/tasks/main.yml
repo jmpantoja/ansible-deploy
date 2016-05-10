@@ -103,5 +103,5 @@
   service: name=kibana state=started enabled=yes 
   
 - name: reload nginx
-  service: name=nginx state=reload enabled=yes
+  service: name=nginx state=reloaded enabled=yes
   
