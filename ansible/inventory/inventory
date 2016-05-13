@@ -8,10 +8,10 @@ monitoring.jump.int	ansible_ssh_host=192.168.50.20
 ci.jump.int	ansible_ssh_host=192.168.50.30
 
 
-[web] 
-# site1.jump.int	ansible_ssh_host=192.168.50.50
+[website] 
+ site1.jump.int	ansible_ssh_host=192.168.50.50
 # site2.jump.int	ansible_ssh_host=192.168.50.51
 # site3.jump.int	ansible_ssh_host=192.168.50.53
 
-test.jump.int	ansible_ssh_host=192.168.50.59
+
 
