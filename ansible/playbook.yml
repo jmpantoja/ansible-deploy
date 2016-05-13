@@ -16,9 +16,9 @@
     - { role: commons }
     - { role: elk }
     
-- hosts: web
+- hosts: website
   vars_files: 
-    - ./vars/web.yml
+    - ./vars/website.yml
   roles:
     - { role: commons }
     - { role: filebeat }

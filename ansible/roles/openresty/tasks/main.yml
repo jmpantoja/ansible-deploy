@@ -1,1 +1,44 @@
 ---
+- name: Install required packages to compile Openresty from source
+  apt: name={{ item }} state=present
+  with_items:
+    - libreadline-dev
+    - make
+    - libncurses5-dev
+    - libpcre3-dev
+    - libssl-dev
+    - perl
+    - libxml2-dev   
+    - libxslt-dev   
+    - libgd-dev     
+    - libgeoip-dev  
+    
+    
+- name: Download openresty    
+  get_url: url=https://openresty.org/download/openresty-{{ openresty_version }}.tar.gz dest=/tmp/openresty-{{ openresty_version }}.tar.gz mode=0664
+  
+  
+- name: Unarchive Openresty
+  unarchive: src=/tmp/openresty-{{ openresty_version }}.tar.gz dest=/tmp/ copy=no
+ 
+- name: Create nginx directory
+  file: path=/var/lib/nginx state=directory mode=0755  
+ 
+- name: Build configure command
+  template: src=build.j2 dest=/tmp/openresty-{{ openresty_version }}/build.sh mode=0777
+ 
+- name: Configure Openresty
+  command: chdir=/tmp/openresty-{{ openresty_version }} ./build.sh
+  
+- name: Compile Openresty
+  command: chdir=/tmp/openresty-{{ openresty_version }} make
+
+- name: Install Openresty
+  command: chdir=/tmp/openresty-{{ openresty_version }} make install
+
+- name: Service command
+  template: src=service.j2 dest=/etc/init.d/nginx owner=root group=root mode=0777
+
+- name: Putting service in start up
+  command: update-rc.d nginx defaults
+  notify: restart nginx

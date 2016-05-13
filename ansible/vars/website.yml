@@ -1,0 +1,24 @@
+---
+openresty_version: "1.9.7.4"
+openresty_modules: 
+  - luajit
+  - http_dav_module
+  - http_flv_module
+  - http_geoip_module
+  - http_gzip_static_module
+  - http_image_filter_module
+  - http_realip_module
+  - http_stub_status_module
+  - http_ssl_module
+  - http_sub_module
+  - http_xslt_module
+  - pcre-jit
+  - ipv6
+  - http_iconv_module
+  - mail
+  - mail_ssl_module
+  - http_secure_link_module
+  - sha1=/usr/include/openssl
+  - md5=/usr/include/openssl
+  
+  
