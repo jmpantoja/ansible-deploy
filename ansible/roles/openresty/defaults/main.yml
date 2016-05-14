@@ -20,3 +20,4 @@ openresty_modules:
   - http_secure_link_module
   - sha1=/usr/include/openssl
   - md5=/usr/include/openssl
+  

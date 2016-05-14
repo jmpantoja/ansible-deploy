@@ -1,4 +1,7 @@
 ---
+php_socket: unix:/var/run/php/php7.0-fpm.sock
+#php_socket: unix:/var/run/php5-fpm.sock
+
 openresty_version: "1.9.7.4"
 openresty_modules: 
   - luajit
@@ -24,6 +27,8 @@ openresty_modules:
 openresty_sites:   
   - server_name: site1.jump.int
     root: /deploy/projects/site1/web/   
+    php_socket: "{{ php_socket }}"
     
   - server_name: site2.jump.int
     root: /deploy/projects/site2/web/   
+    php_socket: "{{ php_socket }}"
