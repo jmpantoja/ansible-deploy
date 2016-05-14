@@ -1,0 +1,12 @@
+server {
+    server_name {{ item.server_name }};
+
+    listen 80;
+
+    root {{ item.root }};
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}

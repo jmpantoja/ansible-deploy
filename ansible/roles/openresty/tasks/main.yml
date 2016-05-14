@@ -12,29 +12,48 @@
     - libxslt-dev   
     - libgd-dev     
     - libgeoip-dev  
-    
+  
+- stat: path=/usr/sbin/nginx
+  register: openresty
     
 - name: Download openresty    
   get_url: url=https://openresty.org/download/openresty-{{ openresty_version }}.tar.gz dest=/tmp/openresty-{{ openresty_version }}.tar.gz mode=0664
-  
+  when: openresty.stat.exists == False
   
 - name: Unarchive Openresty
   unarchive: src=/tmp/openresty-{{ openresty_version }}.tar.gz dest=/tmp/ copy=no
+  when: openresty.stat.exists == False
  
 - name: Create nginx directory
   file: path=/var/lib/nginx state=directory mode=0755  
+  when: openresty.stat.exists == False
  
 - name: Build configure command
   template: src=build.j2 dest=/tmp/openresty-{{ openresty_version }}/build.sh mode=0777
+  when: openresty.stat.exists == False
  
 - name: Configure Openresty
   command: chdir=/tmp/openresty-{{ openresty_version }} ./build.sh
+  when: openresty.stat.exists == False
   
 - name: Compile Openresty
   command: chdir=/tmp/openresty-{{ openresty_version }} make
+  when: openresty.stat.exists == False
 
 - name: Install Openresty
   command: chdir=/tmp/openresty-{{ openresty_version }} make install
+  when: openresty.stat.exists == False
+  
+- name: Prepare Nginx configuration
+  file: path=/etc/nginx/sites-enabled/ state=directory mode=0755
+
+- name: Nginx configuration  
+  template: src=nginx.j2 dest=/etc/nginx/nginx.conf
+  
+- name: Add sites
+  template: src=site.j2 dest=/etc/nginx/sites-enabled/{{ item.server_name }}
+  with_items: "{{ openresty_sites }}"
+      
 
 - name: Service command
   template: src=service.j2 dest=/etc/init.d/nginx owner=root group=root mode=0777
