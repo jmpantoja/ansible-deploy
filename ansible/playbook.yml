@@ -10,15 +10,16 @@
     
 
 - hosts: monitoring
-  gather_facts: yes
   vars_files: 
     - ./vars/monitoring.yml
-
   roles:
     - { role: commons }
     - { role: elk }
     
-- hosts: web
+- hosts: website
+  vars_files: 
+    - ./vars/website.yml
   roles:
     - { role: commons }
     - { role: filebeat }
+    - { role: openresty }
