@@ -22,4 +22,5 @@
   roles:
     - { role: commons }
     - { role: filebeat }
+    - { role: php-fpm }
     - { role: openresty }
