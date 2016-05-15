@@ -27,4 +27,5 @@
     - { role: geerlingguy.mysql }
     - { role: geerlingguy.php }
     - { role: geerlingguy.php-xdebug }
+    - { role: geerlingguy.composer }
     - { role: openresty }
