@@ -1,11 +1,36 @@
 ---
 server_repositories: 
     - ppa:ondrej/php    
+
+server_extra_packages: 
+    - php7.0-intl   
   
 php_socket: unix:/var/run/php/php7.0-fpm.sock
 #php_socket: unix:/var/run/php5-fpm.sock
 
 php_webserver_daemon: nginx
+
+
+php_xdebug_default_enable: 1
+php_xdebug_cli_enable: 1
+php_xdebug_remote_enable: 1
+php_xdebug_remote_connect_back: "false"
+php_xdebug_remote_host: 192.168.50.1
+php_xdebug_remote_port: "9000"
+php_xdebug_remote_log: /tmp/xdebug.log
+php_xdebug_remote_autostart: "0"
+php_xdebug_max_nesting_level: 256
+
+php_xdebug_idekey: netbeans-xdebug
+
+#xdebug.default_enable=1
+#xdebug.remote_enable=1
+#xdebug.remote_handler=dbgp
+#xdebug.remote_host=192.168.50.1
+#;xdebug.remote_connect_back=1 ; Use remote_host or remote_connect_back. With a local VM remote_connect_back should work also.
+#xdebug.remote_port=9000
+#xdebug.remote_autostart=0
+
 
 openresty_version: "1.9.7.4"
 openresty_modules: 
