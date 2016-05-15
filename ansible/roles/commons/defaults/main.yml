@@ -5,6 +5,7 @@ server:
     - apt-transport-https 
     - wget
     - python-software-properties
+    - software-properties-common
     - vim
     - git-core 
     - git
