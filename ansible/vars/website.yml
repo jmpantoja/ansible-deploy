@@ -32,3 +32,5 @@ openresty_sites:
   - server_name: site2.jump.int
     root: /deploy/projects/site2/web/   
     php_socket: "{{ php_socket }}"
+    
+varnish_default_vcl_template_path: templates/varnish/default.vcl.j2
