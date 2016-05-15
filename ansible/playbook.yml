@@ -26,4 +26,5 @@
     - { role: geerlingguy.varnish }
     - { role: geerlingguy.mysql }
     - { role: geerlingguy.php }
+    - { role: geerlingguy.php-xdebug }
     - { role: openresty }
