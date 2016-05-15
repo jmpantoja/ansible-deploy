@@ -1,6 +1,11 @@
 ---
+server_repositories: 
+    - ppa:ondrej/php    
+  
 php_socket: unix:/var/run/php/php7.0-fpm.sock
 #php_socket: unix:/var/run/php5-fpm.sock
+
+php_webserver_daemon: nginx
 
 openresty_version: "1.9.7.4"
 openresty_modules: 
