@@ -22,5 +22,6 @@
   roles:
     - { role: commons }
     - { role: filebeat }
+    - { role: geerlingguy.varnish }
     - { role: php-fpm }
     - { role: openresty }
