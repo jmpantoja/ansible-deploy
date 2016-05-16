@@ -1,22 +1,30 @@
 ---
+- name: add repositories
+  apt_repository: repo="{{ item }}" state=present     
+  with_items: "{{ server_repositories }}"
+
 - name: Update apt
   apt: update_cache=yes cache_valid_time=3600
 
 - name: Install System Packages
   apt: pkg={{ item }} state=latest
-  with_items: "{{ server.packages }}"
+  with_items: "{{ server_packages }}"
 
 - name: Install Extra Packages
   apt: pkg='{{ item }}' state=latest
-  with_items: "{{ server.extra_packages }}"
-  when: server.extra_packages is defined
+  with_items: "{{ server_extra_packages }}"
+  when: server_extra_packages is defined
 
 - name: Configure the timezone
   template: src=timezone.tpl dest=/etc/timezone
 
 - name: More Configure the timezone
-  file: src=/usr/share/zoneinfo/{{server.timezone}} dest=/etc/localtime state=link force=yes backup=yes
+  file: src=/usr/share/zoneinfo/{{server_timezone}} dest=/etc/localtime state=link force=yes backup=yes
 
 - name: Set default system language pack
-  shell: locale-gen {{server.locale}}
+  shell: locale-gen {{server_locale}}
 
+
+- name: Create dirs
+  file: path={{ item }} state=directory
+  with_items: "{{ server_directories }}"

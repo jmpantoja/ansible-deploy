@@ -63,34 +63,34 @@ Vagrant.configure("2") do |config|
     end
   end  
 
-  config.vm.define "web", autostart: false do |web|
+  config.vm.define "website", autostart: false do |website|
 
-    web.vm.provider :virtualbox do |v|
-        v.name = "web"
+    website.vm.provider :virtualbox do |v|
+        v.name = "website"
         v.customize [
             "modifyvm", :id,
-            "--name", "web",
+            "--name", "website",
             "--memory", 512,
             "--natdnshostresolver1", "on",
             "--cpus", 1,
         ]
     end  
  
-    web.vm.box = "ubuntu/trusty64"
-    web.vm.box_check_update = true
-    web.vm.hostname = "web"
+    website.vm.box = "ubuntu/trusty64"
+    website.vm.box_check_update = true
+    website.vm.hostname = "website"
     
-    web.vm.network "private_network", ip: "192.168.50.59"
-    web.vm.network "public_network", use_dhcp_assigned_default_route: true
+    website.vm.network "private_network", ip: "192.168.50.50"
+    website.vm.network "public_network", use_dhcp_assigned_default_route: true
 	
-    web.vm.synced_folder ".", "/vagrant", type: "nfs"
-    web.vm.synced_folder "/deploy", "/deploy", type: "nfs", mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
+    website.vm.synced_folder ".", "/vagrant", type: "nfs"
+    website.vm.synced_folder "/deploy", "/deploy", type: "nfs", mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
 
-    web.vm.provision "ansible" do |ansible|
+    website.vm.provision "ansible" do |ansible|
 	  ansible.sudo = true
       ansible.playbook = "ansible/playbook.yml"
       ansible.inventory_path = "./ansible/inventory"
-      ansible.limit = "web"
+      ansible.limit = "website"
     end
   end  
   

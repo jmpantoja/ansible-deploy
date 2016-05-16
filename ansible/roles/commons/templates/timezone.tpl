@@ -1,1 +1,1 @@
-{{server.timezone}}
+{{server_timezone}}
