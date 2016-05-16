@@ -5,6 +5,9 @@ server_repositories:
 server_extra_packages: 
     - php7.0-intl   
   
+server_directories: 
+    - /deploy/backup/website/redis
+  
 php_socket: unix:/var/run/php/php7.0-fpm.sock
 #php_socket: unix:/var/run/php5-fpm.sock
 
@@ -23,14 +26,8 @@ php_xdebug_max_nesting_level: 256
 
 php_xdebug_idekey: netbeans-xdebug
 
-#xdebug.default_enable=1
-#xdebug.remote_enable=1
-#xdebug.remote_handler=dbgp
-#xdebug.remote_host=192.168.50.1
-#;xdebug.remote_connect_back=1 ; Use remote_host or remote_connect_back. With a local VM remote_connect_back should work also.
-#xdebug.remote_port=9000
-#xdebug.remote_autostart=0
-
+redis_dbdir: /deploy/backup/website/redis
+redis_databases: 1
 
 openresty_version: "1.9.7.4"
 openresty_modules: 

@@ -24,3 +24,7 @@
 - name: Set default system language pack
   shell: locale-gen {{server_locale}}
 
+
+- name: Create dirs
+  file: path={{ item }} state=directory
+  with_items: "{{ server_directories }}"
