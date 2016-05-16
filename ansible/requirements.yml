@@ -8,4 +8,7 @@
 - src: geerlingguy.composer
 - src: geerlingguy.blackfire
 - src: geerlingguy.nodejs
+- src: geerlingguy.elasticsearch 
+- src: geerlingguy.java
+
 
