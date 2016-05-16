@@ -19,12 +19,13 @@
 - hosts: website
   vars_files: 
     - ./vars/website.yml
-      
+          
   roles:
     - { role: commons }
     - { role: filebeat }
     - { role: geerlingguy.varnish }
     - { role: geerlingguy.mysql }
+    - { role: geerlingguy.redis }
     - { role: geerlingguy.php }
     - { role: geerlingguy.php-xdebug }
     - { role: geerlingguy.composer }

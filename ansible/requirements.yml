@@ -4,5 +4,6 @@
 - src: geerlingguy.varnish
 - src: geerlingguy.php
 - src: geerlingguy.php-xdebug
+- src: geerlingguy.redis
 - src: geerlingguy.composer
 
