@@ -23,10 +23,12 @@
   roles:
     - { role: commons }
     - { role: filebeat }
+    - { role: openresty }    
     - { role: geerlingguy.varnish }
     - { role: geerlingguy.mysql }
     - { role: geerlingguy.redis }
     - { role: geerlingguy.php }
     - { role: geerlingguy.php-xdebug }
     - { role: geerlingguy.composer }
-    - { role: openresty }
+    - { role: geerlingguy.blackfire }
+
