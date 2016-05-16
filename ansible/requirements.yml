@@ -1,3 +1,14 @@
 ---
 - src: geerlingguy.mysql
 - src: geerlingguy.nginx
+- src: geerlingguy.varnish
+- src: geerlingguy.php
+- src: geerlingguy.php-xdebug
+- src: geerlingguy.redis
+- src: geerlingguy.composer
+- src: geerlingguy.blackfire
+- src: geerlingguy.nodejs
+- src: geerlingguy.elasticsearch 
+- src: geerlingguy.java
+
+

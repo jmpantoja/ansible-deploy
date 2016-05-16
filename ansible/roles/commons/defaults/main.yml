@@ -1,10 +1,10 @@
 ---
-server:
-  packages: 
+server_packages: 
     - curl
     - apt-transport-https 
     - wget
     - python-software-properties
+    - software-properties-common
     - vim
     - git-core 
     - git
@@ -19,5 +19,7 @@ server:
     - python-software-properties 
     - libffi-dev
     
-  timezone: UTC
-  locale: en_US.UTF-8    
+server_timezone: UTC
+server_locale: en_US.UTF-8    
+
+server_directories: []

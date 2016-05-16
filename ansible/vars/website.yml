@@ -1,0 +1,84 @@
+---
+server_repositories: 
+    - ppa:ondrej/php    
+
+server_extra_packages: 
+    - php7.0-intl   
+  
+server_directories: 
+    - /deploy/backup/website/redis
+  
+php_socket: unix:/var/run/php/php7.0-fpm.sock
+#php_socket: unix:/var/run/php5-fpm.sock
+
+php_webserver_daemon: nginx
+
+php_xdebug_default_enable: 1
+php_xdebug_cli_enable: 1
+php_xdebug_remote_enable: 1
+php_xdebug_remote_connect_back: "false"
+php_xdebug_remote_host: 192.168.50.1
+php_xdebug_remote_port: "9000"
+php_xdebug_remote_log: /tmp/xdebug.log
+php_xdebug_remote_autostart: "0"
+php_xdebug_max_nesting_level: 256
+
+php_xdebug_idekey: netbeans-xdebug
+
+redis_dbdir: /deploy/backup/website/redis
+redis_databases: 1
+
+
+nodejs_version: "5.x"
+
+openresty_version: "1.9.7.4"
+openresty_modules: 
+  - luajit
+  - http_dav_module
+  - http_flv_module
+  - http_geoip_module
+  - http_gzip_static_module
+  - http_image_filter_module
+  - http_realip_module
+  - http_stub_status_module
+  - http_ssl_module
+  - http_sub_module
+  - http_xslt_module
+  - pcre-jit
+  - ipv6
+  - http_iconv_module
+  - mail
+  - mail_ssl_module
+  - http_secure_link_module
+  - sha1=/usr/include/openssl
+  - md5=/usr/include/openssl
+  
+openresty_sites:   
+  - server_name: site1.jump.int
+    root: /deploy/projects/site1/web/   
+    php_socket: "{{ php_socket }}"
+    
+  - server_name: site2.jump.int
+    root: /deploy/projects/site2/web/   
+    php_socket: "{{ php_socket }}"
+    
+varnish_default_vcl_template_path: templates/varnish/default.vcl.j2
+
+
+mysql_enabled_on_startup: yes
+
+mysql_root_password: admin
+
+mysql_databases:
+  - name: site1
+    encoding: utf8
+    collation: utf8_general_ci
+
+mysql_users:
+  - name: site1
+    host: "%"
+    password: m1sql
+    priv: "site1.*:ALL"
+    
+    
+    

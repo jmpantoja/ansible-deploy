@@ -10,15 +10,28 @@
     
 
 - hosts: monitoring
-  gather_facts: yes
   vars_files: 
     - ./vars/monitoring.yml
-
   roles:
     - { role: commons }
     - { role: elk }
     
-- hosts: web
+- hosts: website
+  vars_files: 
+    - ./vars/website.yml
+          
   roles:
     - { role: commons }
     - { role: filebeat }
+    - { role: openresty }    
+    - { role: geerlingguy.java }
+    - { role: geerlingguy.elasticsearch }
+    - { role: geerlingguy.varnish }
+    - { role: geerlingguy.mysql }
+    - { role: geerlingguy.redis }
+    - { role: geerlingguy.php }
+    - { role: geerlingguy.php-xdebug }
+    - { role: geerlingguy.composer }
+    - { role: geerlingguy.blackfire }
+    - { role: geerlingguy.nodejs }
+

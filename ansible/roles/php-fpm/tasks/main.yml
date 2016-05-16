@@ -1,0 +1,25 @@
+---
+- name: add PPA for php7
+  apt_repository: repo="ppa:ondrej/php" state=present 
+
+- name: Update apt
+  apt: update_cache=yes
+
+- debug: msg={{ item }}
+  with_items: "{{ php7_packages }}"
+  when: php_version == 7
+
+- debug: msg={{ item }}
+  with_items: "{{ php56_packages }}"
+  when: php_version == 56
+
+- set_fact: php_packages={{ php7_packages }} 
+  when: php_version == 7 
+
+- set_fact: php_packages={{ php56_packages }} 
+  when: php_version == 56 
+
+
+- name: install php packages
+  apt: name={{ item }} state=present
+  with_items: "{{ php_packages }}"
