@@ -31,4 +31,5 @@
     - { role: geerlingguy.php-xdebug }
     - { role: geerlingguy.composer }
     - { role: geerlingguy.blackfire }
+    - { role: geerlingguy.nodejs }
 
