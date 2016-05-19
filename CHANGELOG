@@ -1,3 +1,17 @@
+[1.0.0] - 2016-05-16
+- Playbook para LEMP, Incluye:
+    - openresty   
+    - java 
+    - elasticsearch 
+    - varnish 
+    - mysql 
+    - redis 
+    - php 
+    - php-xdebug 
+    - composer 
+    - blackfire 
+    - nodejs 
+
 [0.1.0] - 2016-05-10
 - Playbook para ELK
 - Playbook para redmine
