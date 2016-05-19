@@ -29,7 +29,6 @@ php_xdebug_idekey: netbeans-xdebug
 redis_dbdir: /deploy/backup/website/redis
 redis_databases: 1
 
-
 nodejs_version: "5.x"
 
 openresty_version: "1.9.7.4"
@@ -71,6 +70,10 @@ mysql_enabled_on_startup: yes
 mysql_root_password: admin
 
 mysql_databases:
+  - name: phpci
+    encoding: utf8
+    collation: utf8_general_ci
+    
   - name: site1
     encoding: utf8
     collation: utf8_general_ci
@@ -80,6 +83,11 @@ mysql_users:
     host: "%"
     password: m1sql
     priv: "site1.*:ALL"
+    
+  - name: phpci
+    host: "%"
+    password: m1sql
+    priv: "phpci.*:ALL"
     
     
     
