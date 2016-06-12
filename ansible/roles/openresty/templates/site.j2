@@ -1,6 +1,6 @@
 server {
-    server_name {{ item.server_name }};
-    root {{ item.root }};
+    server_name www.{{ item.server_name }} {{ item.server_name }};
+    root {{ item.root }}/public;
     listen 81;
     
     set $skip_cache 0;
@@ -79,6 +79,19 @@ server {
         access_log off; 
         log_not_found off; 
     }
-
-
 }
+
+server {
+    server_name docs.{{ item.server_name }};
+    root {{ item.root }}/build/docs;
+    index index.html
+    listen 81;
+}
+
+server {
+    server_name cover.{{ item.server_name }};
+    root {{ item.root }}/build/logs/coverage;
+    index index.html
+    listen 81;
+}
+
