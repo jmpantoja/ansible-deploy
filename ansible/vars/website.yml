@@ -5,6 +5,8 @@ server_repositories:
 server_extra_packages: 
     - php7.0-intl   
     - php7.0-mysql   
+    - php7.0-xsl 
+    - beanstalkd
   
 server_directories: 
     - /deploy/backup/website/redis
@@ -54,16 +56,15 @@ openresty_modules:
   - md5=/usr/include/openssl
   
 openresty_sites:   
+  - server_name: php-utils.jump.int
+    root: /deploy/projects/php-utils
+    php_socket: "{{ php_socket }}"
+    
   - server_name: site1.jump.int
-    root: /deploy/projects/site1/web/   
+    root: /deploy/projects/site1
     php_socket: "{{ php_socket }}"
-    
-  - server_name: site2.jump.int
-    root: /deploy/projects/site2/web/   
-    php_socket: "{{ php_socket }}"
-    
+        
 varnish_default_vcl_template_path: templates/varnish/default.vcl.j2
-
 
 mysql_enabled_on_startup: yes
 
@@ -83,11 +84,4 @@ mysql_users:
     host: "%"
     password: m1sql
     priv: "site1.*:ALL"
-    
-  - name: phpci
-    host: "%"
-    password: m1sql
-    priv: "phpci.*:ALL"
-    
-    
-    
+        
