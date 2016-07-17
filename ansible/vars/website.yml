@@ -7,7 +7,7 @@ server_extra_packages:
     - php7.0-mysql   
   
 server_directories: 
-    - /deploy/backup/website/redis
+    - /mnt/datos/deploy/backup/website/redis
   
 php_socket: unix:/var/run/php/php7.0-fpm.sock
 #php_socket: unix:/var/run/php5-fpm.sock
@@ -26,7 +26,7 @@ php_xdebug_max_nesting_level: 256
 
 php_xdebug_idekey: netbeans-xdebug
 
-redis_dbdir: /deploy/backup/website/redis
+redis_dbdir: /mnt/datos/deploy/backup/website/redis
 redis_databases: 1
 
 nodejs_version: "5.x"
@@ -55,11 +55,11 @@ openresty_modules:
   
 openresty_sites:   
   - server_name: site1.jump.int
-    root: /deploy/projects/site1/web/   
+    root: /mnt/datos/deploy/projects/site1/web/   
     php_socket: "{{ php_socket }}"
     
   - server_name: site2.jump.int
-    root: /deploy/projects/site2/web/   
+    root: /mnt/datos/deploy/projects/site2/web/   
     php_socket: "{{ php_socket }}"
     
 varnish_default_vcl_template_path: templates/varnish/default.vcl.j2

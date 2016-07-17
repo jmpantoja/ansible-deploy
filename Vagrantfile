@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
     redmine.vm.network "public_network", use_dhcp_assigned_default_route: true
 	
     redmine.vm.synced_folder ".", "/vagrant", type: "nfs"
-    redmine.vm.synced_folder "/deploy", "/deploy", type: "nfs", mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
+    redmine.vm.synced_folder "/mnt/datos/deploy", "/mnt/datos/deploy", type: "nfs", mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
 
     redmine.vm.provision "ansible" do |ansible|
 	  ansible.sudo = true
@@ -53,7 +53,7 @@ Vagrant.configure("2") do |config|
     monitoring.vm.network "public_network", use_dhcp_assigned_default_route: true
 	
     monitoring.vm.synced_folder ".", "/vagrant", type: "nfs"
-    monitoring.vm.synced_folder "/deploy", "/deploy", type: "nfs", mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
+    monitoring.vm.synced_folder "/mnt/datos/deploy", "/mnt/datos/deploy", type: "nfs", mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
 
     monitoring.vm.provision "ansible" do |ansible|
 	  ansible.sudo = true
@@ -84,7 +84,7 @@ Vagrant.configure("2") do |config|
     website.vm.network "public_network", use_dhcp_assigned_default_route: true
 	
     website.vm.synced_folder ".", "/vagrant", type: "nfs"
-    website.vm.synced_folder "/deploy", "/deploy", type: "nfs", mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
+    website.vm.synced_folder "/mnt/datos/deploy", "/mnt/datos/deploy", type: "nfs", mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
 
     website.vm.provision "ansible" do |ansible|
 	  ansible.sudo = true
