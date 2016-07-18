@@ -2,16 +2,16 @@
 - name: Directorio para backups
   file: path={{ item }} state=directory owner=vagrant group=vagrant
   with_items:
-    - /deploy/backup/redmine/database
-    - /deploy/backup/redmine/code
+    - /mnt/datos/deploy/backup/redmine/database
+    - /mnt/datos/deploy/backup/redmine/code
 
 - name: Crontab backup redmine dabatase
   cron: name="backup redmine dabatase" 
         minute=*/30 
-        job="mysqldump --defaults-file=/root/.my.cnf redmine > /deploy/backup/redmine/database/redmine.dump"
+        job="mysqldump --defaults-file=/root/.my.cnf redmine > /mnt/datos/deploy/backup/redmine/database/redmine.dump"
 
 - name: Crontab backup redmine code
   cron: name="backup redmine code" 
         minute=*/30 
-        job="tar -c {{ redmine_path }} | gzip --rsyncable > /deploy/backup/redmine/code/code.tar.gz"
+        job="tar -c {{ redmine_path }} | gzip --rsyncable > /mnt/datos/deploy/backup/redmine/code/code.tar.gz"
         

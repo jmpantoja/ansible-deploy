@@ -9,7 +9,7 @@ Proyecto de vagrant / ansible para el despligue de las máquinas necesarias para
  
 Es necesario crear el directorio
 
-    /deploy
+    /mnt/datos/deploy
     
 en la máquina local, que es punto de montaje compartido entre el host, y las máquinas virtuales
 
@@ -18,7 +18,7 @@ en la máquina local, que es punto de montaje compartido entre el host, y las m�
 Instala una máquina con redmine, para gestión de tareas, wiki y etc.
 Periodicamente, hace copia de seguridad de la base de datos, y del código en:
 
-    /deploy/backup/redmine
+    /mnt/datos/deploy/backup/redmine
 
 Para levantar la máquina: 
 

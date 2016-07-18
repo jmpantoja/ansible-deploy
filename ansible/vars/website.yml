@@ -9,7 +9,7 @@ server_extra_packages:
     - beanstalkd
   
 server_directories: 
-    - /deploy/backup/website/redis
+    - /mnt/datos/deploy/backup/website/redis
   
 php_socket: unix:/var/run/php/php7.0-fpm.sock
 #php_socket: unix:/var/run/php5-fpm.sock
@@ -28,7 +28,7 @@ php_xdebug_max_nesting_level: 256
 
 php_xdebug_idekey: netbeans-xdebug
 
-redis_dbdir: /deploy/backup/website/redis
+redis_dbdir: /mnt/datos/deploy/backup/website/redis
 redis_databases: 1
 
 nodejs_version: "5.x"
