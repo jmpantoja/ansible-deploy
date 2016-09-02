@@ -1,0 +1,21 @@
+upstream {{ item.server_name }} {  
+    server 127.0.0.1:{{ item.port }};
+}
+
+server {  
+    server_name {{ item.server_name }};
+    root {{ item.root }};
+    listen 81;
+    access_log /var/log/nginx/{{ item.server_name }}-access.log;
+    error_log /var/log/nginx/{{ item.server_name }}-error.log debug;
+
+    location / {
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarder-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-NginX-Proxy true;
+
+        proxy_pass http://{{ item.server_name }};
+        proxy_redirect off;
+    }
+}

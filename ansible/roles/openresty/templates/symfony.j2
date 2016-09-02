@@ -2,6 +2,8 @@ server {
     server_name {{ item.server_name }};
     root {{ item.root }};
     listen 81;
+    access_log /var/log/nginx/{{ item.server_name }}-access.log;
+    error_log /var/log/nginx/{{ item.server_name }}-error.log debug;
     
     set $skip_cache 0;
 
@@ -67,18 +69,35 @@ server {
     location ~* ^.+\.(ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)$ {
         access_log off; 
         log_not_found off; 
-        expires max;
+        expires 30d;
+        add_header Pragma public;
+        add_header Cache-Control "public, mustrevalidate, proxy-revalidate";
     }
 
-    location = /robots.txt { 
-        access_log off; 
-        log_not_found off; 
+    location = /(?:favicon.ico|robots.txt) {
+        access_log off;
+        log_not_found off;
     }
+
     location ~ /\. { 
         deny  all; 
         access_log off; 
         log_not_found off; 
     }
 
+    # Block access to Sqlite database files
+    location ~ /\.(?:db)$ {
+        deny all;
+    }
+
+    # Block access to certain JSON files
+    location ~ /(?:bower|composer|jsdoc|package)\.json$ {
+        deny all;
+    }
+
+    # Block access to Markdown, Twig & YAML files directly
+    location ~* /(.*)\.(?:dist|markdown|md|twig|yaml|yml)$ {
+        deny all;
+    }
 
 }

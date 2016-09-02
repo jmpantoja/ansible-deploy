@@ -3,11 +3,18 @@ server_repositories:
     - ppa:ondrej/php    
 
 server_extra_packages: 
+    - php7.0-fpm   
+    - php7.0-cli
     - php7.0-intl   
+    - php7.0-gd
+    - php7.0-mbstring    
     - php7.0-mysql   
+    - postfix
   
 server_directories: 
-    - /mnt/datos/deploy/backup/website/redis
+    - /deploy/backup/website/redis
+    
+php_version: 7    
   
 php_socket: unix:/var/run/php/php7.0-fpm.sock
 #php_socket: unix:/var/run/php5-fpm.sock
@@ -26,10 +33,13 @@ php_xdebug_max_nesting_level: 256
 
 php_xdebug_idekey: netbeans-xdebug
 
-redis_dbdir: /mnt/datos/deploy/backup/website/redis
+redis_dbdir: /deploy/backup/website/redis
 redis_databases: 1
 
 nodejs_version: "5.x"
+nodejs_npm_global_packages:
+  - {name: forever}
+  - {name: gulp}
 
 openresty_version: "1.9.7.4"
 openresty_modules: 
@@ -54,16 +64,19 @@ openresty_modules:
   - md5=/usr/include/openssl
   
 openresty_sites:   
-  - server_name: site1.jump.int
-    root: /mnt/datos/deploy/projects/site1/web/   
+  - server_name: site1.planb.int
+    root: /deploy/projects/planB/sites/site1/web 
     php_socket: "{{ php_socket }}"
+    template: bolt
     
-  - server_name: site2.jump.int
-    root: /mnt/datos/deploy/projects/site2/web/   
-    php_socket: "{{ php_socket }}"
+  - server_name: showroom.planb.int
+    root: /deploy/projects/showroom/dist/   
+    source: /deploy/projects/showroom
+    port: 3000
+    template: node
+    
     
 varnish_default_vcl_template_path: templates/varnish/default.vcl.j2
-
 
 mysql_enabled_on_startup: yes
 

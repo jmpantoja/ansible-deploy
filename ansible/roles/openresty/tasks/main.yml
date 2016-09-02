@@ -12,6 +12,9 @@
     - libxslt-dev   
     - libgd-dev     
     - libgeoip-dev  
+    - build-essential 
+    - zlib1g-dev  
+    - unzip
   
 - stat: path=/usr/sbin/nginx
   register: openresty
@@ -19,7 +22,7 @@
 - name: Download openresty    
   get_url: url=https://openresty.org/download/openresty-{{ openresty_version }}.tar.gz dest=/tmp/openresty-{{ openresty_version }}.tar.gz mode=0664
   when: openresty.stat.exists == False
-  
+    
 - name: Unarchive Openresty
   unarchive: src=/tmp/openresty-{{ openresty_version }}.tar.gz dest=/tmp/ copy=no
   when: openresty.stat.exists == False
@@ -51,13 +54,13 @@
   template: src=nginx.j2 dest=/etc/nginx/nginx.conf
   
 - name: Add sites
-  template: src=site.j2 dest=/etc/nginx/sites-enabled/{{ item.server_name }}
+  template: src={{ item.template }}.j2 dest=/etc/nginx/sites-enabled/{{ item.server_name }}
   with_items: "{{ openresty_sites }}"
       
-
 - name: Service command
   template: src=service.j2 dest=/etc/init.d/nginx owner=root group=root mode=0777
 
 - name: Putting service in start up
   command: update-rc.d nginx defaults
   notify: restart nginx
+
