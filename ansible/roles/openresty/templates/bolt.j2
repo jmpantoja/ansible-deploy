@@ -1,5 +1,5 @@
 server {
-    server_name static.{{ item.server_name }};
+    server_name cdn.{{ item.server_name }};
     root {{ item.root }};
     listen 81;
     access_log /var/log/nginx/{{ item.server_name }}-access.log;
@@ -21,6 +21,7 @@ server {
     access_log /var/log/nginx/{{ item.server_name }}-access.log;
     error_log /var/log/nginx/{{ item.server_name }}-error.log debug;
 
+
     index app.php;
 
     set $skip_cache 0;
@@ -37,7 +38,6 @@ server {
     location / {
          try_files $uri $uri/ /app.php?$query_string;
     }
-
 
     location /redis-fetch {
         internal  ;

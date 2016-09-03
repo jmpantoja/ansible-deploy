@@ -1,4 +1,5 @@
 #!/bin/bash
+#Comando para compilar nginx
 ./configure \
 --pid-path=/var/run/nginx.pid \
 --lock-path=/var/lock/nginx.lock \
@@ -8,6 +9,7 @@
 {% for module in openresty_modules %}
 --with-{{ module }} \
 {% endfor %}
+--add-module=/tmp/ngx_pagespeed-release-{{ pagespeed_version }}-beta \
 --http-client-body-temp-path=/var/lib/nginx/body \
 --http-fastcgi-temp-path=/var/lib/nginx/fastcgi \
 --http-log-path=/var/log/nginx/access.log \

@@ -1,4 +1,6 @@
 ---
+pagespeed_version: "1.11.33.3"
+
 openresty_version: "1.9.7.4"
 openresty_modules: 
   - luajit
@@ -17,7 +19,12 @@ openresty_modules:
   - http_iconv_module
   - mail
   - mail_ssl_module
-  - http_secure_link_module
+  - http_secure_link_module  
   - sha1=/usr/include/openssl
   - md5=/usr/include/openssl
+
+openresty_extra_conf:
+  - conf.d/pagespeed
   
+openresty_common_conf:  
+  - common/common

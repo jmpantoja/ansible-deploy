@@ -31,6 +31,25 @@
   file: path=/var/lib/nginx state=directory mode=0755  
   when: openresty.stat.exists == False
  
+ 
+ #PAGESPEED
+- name: Download PageSpeed
+  get_url: url=https://github.com/pagespeed/ngx_pagespeed/archive/release-{{ pagespeed_version }}-beta.zip dest=/tmp/pagespeed-{{ pagespeed_version }}-beta.zip mode=0664
+  when: openresty.stat.exists == False
+
+- name: Unarchive PageSpeed
+  unarchive: src=/tmp/pagespeed-{{ pagespeed_version }}-beta.zip dest=/tmp/ copy=no
+  when: openresty.stat.exists == False
+
+- name: Download psol for PageSpeed
+  get_url: url=https://dl.google.com/dl/page-speed/psol/{{ pagespeed_version }}.tar.gz dest=/tmp/psol-{{ pagespeed_version }}.tar.gz mode=0664
+  when: openresty.stat.exists == False
+
+- name: Unarchive psol for PageSpeed
+  unarchive: src=/tmp/psol-{{ pagespeed_version }}.tar.gz dest=/tmp/ngx_pagespeed-release-{{ pagespeed_version }}-beta/ copy=no
+  when: openresty.stat.exists == False
+
+#BUILD     
 - name: Build configure command
   template: src=build.j2 dest=/tmp/openresty-{{ openresty_version }}/build.sh mode=0777
   when: openresty.stat.exists == False
@@ -52,6 +71,21 @@
 
 - name: Nginx configuration  
   template: src=nginx.j2 dest=/etc/nginx/nginx.conf
+  
+- name: Create conf.d directory
+  file: path=/etc/nginx/conf.d state=directory mode=0755
+
+- name: Create common directory
+  file: path=/etc/nginx/common state=directory mode=0755
+  
+- name: Nginx extra configuration  
+  template: src={{ item }}.j2 dest=/etc/nginx/{{ item }}.conf
+  with_items: "{{ openresty_extra_conf }}"
+  
+- name: Nginx common configuration  
+  template: src={{ item }}.j2 dest=/etc/nginx/{{ item }}.conf
+  with_items: "{{ openresty_common_conf }}"
+  
   
 - name: Add sites
   template: src={{ item.template }}.j2 dest=/etc/nginx/sites-enabled/{{ item.server_name }}

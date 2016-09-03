@@ -4,7 +4,9 @@ server {
     listen 81;
     access_log /var/log/nginx/{{ item.server_name }}-access.log;
     error_log /var/log/nginx/{{ item.server_name }}-error.log debug;
-    
+
+    include /etc/nginx/conf.d/pagespeed.conf;    
+
     set $skip_cache 0;
 
     # POST requests and urls with a query string should always go to PHP
@@ -12,7 +14,6 @@ server {
         set $skip_cache 1;
     }
 
-    
     location / {
          try_files $uri /app.php$is_args$args;
     }
