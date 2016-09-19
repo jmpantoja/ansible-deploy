@@ -34,7 +34,7 @@ php_xdebug_max_nesting_level: 256
 php_xdebug_idekey: netbeans-xdebug
 
 redis_dbdir: /deploy/backup/website/redis
-redis_databases: 1
+redis_databases: 8
 
 nodejs_version: "5.x"
 nodejs_npm_global_packages:

@@ -1,0 +1,139 @@
+server {
+    server_name cdn.{{ item.server_name }};
+    root {{ item.root }};
+    listen 81;
+    access_log /var/log/nginx/{{ item.server_name }}-access.log;
+    error_log /var/log/nginx/{{ item.server_name }}-error.log debug;
+
+    location ~* ^.+\.(css|js|ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)$ {
+        access_log off;
+        log_not_found off;
+        expires 30d;
+        add_header Pragma public;
+        add_header Cache-Control "public, mustrevalidate, proxy-revalidate";
+    }
+}
+
+server {
+    server_name {{ item.server_name }};
+    root {{ item.root }};
+    listen 81;
+    access_log /var/log/nginx/{{ item.server_name }}-access.log;
+    error_log /var/log/nginx/{{ item.server_name }}-error.log debug;
+
+
+    index app.php;
+
+    set $skip_cache 0;
+    
+    # POST requests and urls with a query string should always go to PHP
+    if ($request_method != GET) {
+        set $skip_cache 1;
+    }
+
+    if ($request_uri ~* /bolt.*) { 
+            set $skip_cache 1;
+    } 
+
+    location / {
+         try_files $uri $uri/ /app.php?$query_string;
+    }
+
+    location /redis-fetch {
+        internal  ;
+        set  $redis_key $args;
+        redis_pass  127.0.0.1:6379;
+    }
+
+    location /redis-store {
+        internal  ;
+        set_unescape_uri $key $arg_key ;
+        redis2_query  set $key $echo_request_body;
+        redis2_query expire $key $arg_expire;
+        redis2_pass  127.0.0.1:6379;
+    } 
+
+
+    location ~ ^/(app_dev|config)\.php(/|$) {
+        fastcgi_pass {{ item.php_socket }};
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+    }
+
+    location ~ ^/app\.php(/|$) {
+
+        set $key "$scheme://$host$request_uri";
+
+        srcache_fetch_skip $skip_cache;
+        srcache_store_skip $skip_cache;
+
+        srcache_response_cache_control on;
+
+        set_escape_uri $escaped_key $key;
+
+        srcache_fetch GET /redis-fetch $key;
+        srcache_store PUT /redis-store key=$escaped_key&expire=$srcache_expire;
+
+        more_set_headers 'X-Cache $srcache_fetch_status';
+        more_set_headers 'X-Cache-2 $srcache_store_status';
+
+        fastcgi_pass {{ item.php_socket }};
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+        internal;
+    }
+
+    # Generated thumbnail images
+    location ~* /thumbs/(.*)$ {
+        try_files $uri $uri/ /app.php?$query_string;
+    }
+
+    location ~* ^.+\.(css|js|ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)$ {
+        access_log off;
+        log_not_found off; 
+        expires 30d;
+        add_header Pragma public;
+        add_header Cache-Control "public, mustrevalidate, proxy-revalidate";
+    }
+
+    location = /(?:favicon.ico|robots.txt) {
+        access_log off;
+        log_not_found off;
+    }
+
+    location ~ /\. {
+        deny  all; 
+        access_log off; 
+        log_not_found off; 
+    }
+
+    # Block access to Sqlite database files
+    location ~ /\.(?:db)$ {
+        deny all;
+    }
+
+    # Block access to certain JSON files
+    location ~ /(?:bower|composer|jsdoc|package)\.json$ {
+        deny all;
+    }
+
+    # Block access to Markdown, Twig & YAML files directly
+    location ~* /(.*)\.(?:dist|markdown|md|twig|yaml|yml)$ {
+        deny all;
+    }
+
+    # Backend async routes
+    location ~* /async/(.*)$ {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    # Block PHP files from being run in upload (files), app, theme and extension directories
+    location ~* /(?:app|extensions|files|theme)/(.*)\.php$ {
+        deny all;
+    }
+
+}

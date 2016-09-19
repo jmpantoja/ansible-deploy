@@ -1,0 +1,136 @@
+location ~ /thumbs/(small|medium|large|xlarge|xxlarge)/col-(1|2|3|4|5|6|7|8|9|10|11|12)/(.*) {
+	set $device $1;
+	set $thumb $2; 
+	set $image_path $3;
+
+	set_by_lua_block $width {
+		local devices = {
+			small = 640,
+		        medium = 1024,
+		        large = 1200,
+         		xlarge = 1440,
+         		xxlarge = 1920
+		};
+
+		local width = devices[ngx.var.device] * ngx.var.thumb / 12 ;
+		local xx = width;
+
+		if width <= 160 then
+			width = 160;		
+		elseif width <= 320 then
+			width = 320;	
+		elseif width <= 480 then
+			width = 480;	
+		elseif width <= 640 then
+			width = 640;	
+		elseif width <= 720 then
+			width = 720;	
+		elseif width <= 960 then
+			width = 960;	
+		elseif width <= 1024 then
+			width = 1024;	
+		elseif width <= 1200 then
+			width = 1200;	
+		elseif width <= 1440 then
+			width = 1440;	
+		else
+			width = 1920;
+		end		
+
+		return width;
+
+	}
+
+	set $image_uri resize/$image_path?width=$width;
+
+	if (!-f $request_filename) {
+        	 proxy_pass http://127.0.0.1:81/$image_uri;
+	         break;
+	 }
+	
+	proxy_store          $realpath_root/thumbs/$device/col-$thumb/$image_path;
+	proxy_store_access   user:rw  group:rw  all:r;
+	proxy_temp_path      /tmp/images;
+
+}
+
+# Limitar solo a lo que nos pida el /admin de bolt
+location ~ /thumbs/(54x40|54x41|100x100|200x150|1000x800)(c|r)/(.*) {
+
+  	error_page 403 415 @noproxy;
+
+	set $dim $1;
+	set $image_path $3;
+
+	set_by_lua_block $width {
+		
+		return string.match(ngx.var.dim, "(%d+)x");
+	}
+	
+	set $demins "$1c";	
+	set $image_uri resize/$image_path?width=$width;
+	
+	if (!-f $request_filename) {
+		proxy_pass http://127.0.0.1:81/$image_uri;
+		break;
+	}
+
+	proxy_store          $realpath_root/thumbs/$demins/$image_path;
+	proxy_store_access   user:rw  group:rw  all:r;
+	proxy_temp_path      /tmp/images;
+}
+
+location ~ /resize/(.*) {	
+
+  error_page 403 415 @noproxy;
+  if ($http_x_proxy_pass != on) {
+          return 403;
+  }
+  	 
+   proxy_pass http://127.0.0.1:81/files/$1; 
+   image_filter size;	
+
+   image_filter resize $arg_width -;
+   image_filter_jpeg_quality 90;
+}
+
+location ~ /files {
+autoindex on;
+}
+
+location @noproxy {
+	return 403;
+}
+
+location = /empty {
+    internal;
+    empty_gif;
+}
+
+#Hojas de estilo, y javascript
+location ~* ^.+\.(css|js)$ {
+    access_log off;
+    log_not_found off;
+    expires 30d;
+    add_header Pragma public;
+    add_header Cache-Control "public, mustrevalidate, proxy-revalidate";
+}
+
+#Imagenes
+location ~* ^.+\.(jpg|jpeg|gif|png|ico)$ {
+    access_log off;
+    log_not_found off;
+    expires 30d;
+    add_header Pragma public;
+    add_header Cache-Control "public, mustrevalidate, proxy-revalidate";
+}
+
+#Resto de archivos
+location ~* ^.+\.(ogg|ogv|svg|svgz|eot|otf|woff|woff2|mp4|ttf|rss|atom|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)$ {
+    access_log off;
+    log_not_found off;
+    expires 30d;
+    add_header Pragma public;
+    add_header Cache-Control "public, mustrevalidate, proxy-revalidate";
+}
+

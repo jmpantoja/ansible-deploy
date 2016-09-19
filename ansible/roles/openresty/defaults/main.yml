@@ -25,6 +25,11 @@ openresty_modules:
 
 openresty_extra_conf:
   - conf.d/pagespeed
+  - conf.d/gzip
+  - conf.d/proxy
   
 openresty_common_conf:  
-  - common/common
+  - common/acl    
+  - common/pagespeed
+  - common/php
+  - common/static

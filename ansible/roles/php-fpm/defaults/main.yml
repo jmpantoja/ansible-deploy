@@ -2,12 +2,12 @@
 php_version: 7
 
 php7_packages: 
-  - php7.0
-  - php7.0-fpm
-  - php7.0-common
-  - php7.0-mysql
-  - php7.0-intl
-  - php7.0-xml
+  - php7.1
+  - php7.1-fpm
+  - php7.1-common
+  - php7.1-mysql
+  - php7.1-intl
+  - php7.1-xml
 
 php56_packages: 
   - php5.6

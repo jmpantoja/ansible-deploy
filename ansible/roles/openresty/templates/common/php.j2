@@ -1,0 +1,127 @@
+index app.php;
+
+# Todo lo que no ha sido capturado por otro location
+location / {
+    try_files @blank /app.php?$query_string;
+}
+
+# Punto de entrada, para entorno PRO, con cache activada
+# Primero se mira en la cache, y si no existe, se pasa a fast-cgi
+location ~ ^/app\.php(/|$) {
+    internal;
+
+    set_by_lua_block $skip {
+        local admin = string.find(ngx.var.request_uri, "^/admin"); 
+
+        return admin and 1 or 0;
+    }   
+
+    set $key "$scheme://$host$request_uri";
+    set_escape_uri $escaped_key $key;
+
+    srcache_fetch_skip $skip;
+    srcache_store_skip $skip;
+
+    srcache_fetch GET /__fetch $key;
+    srcache_store PUT /__store key=$escaped_key&expire=$srcache_expire;
+
+    more_set_headers 'X-Cache $srcache_fetch_status';
+
+    fastcgi_pass unix:/var/run/php/php7.1-fpm.sock;
+    fastcgi_split_path_info ^(.+\.php)(/.*)$;
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+    fastcgi_param DOCUMENT_ROOT $realpath_root;	
+}
+
+# Punto de entrada, para entorno DEV, con cache desactivada    
+location ~ ^/app_dev\.php(/|$) {
+    fastcgi_pass unix:/var/run/php/php7.1-fpm.sock;
+    fastcgi_split_path_info ^(.+\.php)(/.*)$;
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+    fastcgi_param DOCUMENT_ROOT $realpath_root;	
+}    
+
+
+# Guarda la response en cache
+# Redis DataBase 0. Key: url, Value: response
+# Redis DataBase 1. Para cada tag, en el header X-Cache-Tags (separado por comas)
+# List Name: tag, Entry: url
+location /__store {
+    internal;
+
+    set_unescape_uri $key $arg_key ;
+
+    content_by_lua_block  {
+            local redis = require "resty.redis"
+            red = redis:new();
+            local ok, err = red:connect("127.0.0.1", 6379)
+
+            if ok then
+                    local tags = string.match(ngx.var.echo_request_body, 'X%-Cache%-Tags: ([^\n|^\r]+)');
+
+                    if tags then
+
+                            red:select(1);  
+                            for tag in string.gmatch(tags..",", '([^,]*),') do 
+                                    red:sadd(tag, ngx.var.key);	  
+                                    red:persist(tag); 
+                            end	
+                    end
+
+            end
+
+            local persist = string.match(ngx.var.echo_request_body, 'X%-Cache%-Persist: ([^\n|^\r]+)');
+            red:select(0);
+            red:set(ngx.var.key, ngx.var.echo_request_body);
+
+            if persist then
+                red:persist(ngx.var.key);
+            else
+                red:expire(ngx.var.key, ngx.var.arg_expire);
+            end
+    }
+
+} 
+
+# Busca la url en cache
+location /__fetch {
+    internal;
+    set  $redis_key $args;
+    redis_pass  127.0.0.1:6379;
+}
+
+# Purge
+location ~ /__purge {
+    include common/acl.conf;
+
+    if ( $request_method !~ ^(PURGE)$ ) {
+            return 405;
+    }
+
+    default_type "text/plain";
+
+    content_by_lua_block {
+            local redis = require "resty.redis"
+            red = redis:new();
+            local ok, err = red:connect("127.0.0.1", 6379)
+
+            if ok then
+                red:select(1);
+                if ngx.var.query_string then
+
+                        for tag in string.gmatch(ngx.var.query_string..",", '([^,]*),') do
+                                local members = red:smembers(tag);
+
+                                ngx.status = 200;
+                                for _, value in pairs(members) do
+                                        red:select(0);
+                                        red:del(value);
+                                end
+
+                        end
+                end
+            end
+    }
+}
