@@ -31,7 +31,9 @@
     - { role: geerlingguy.redis }
     - { role: geerlingguy.php }
     - { role: geerlingguy.php-xdebug }
+    - { role: php-fpm }    
     - { role: geerlingguy.composer }
     - { role: geerlingguy.blackfire }
     - { role: geerlingguy.nodejs }
+    
 
