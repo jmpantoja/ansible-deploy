@@ -11,10 +11,10 @@ location ~ ^/app\.php(/|$) {
     internal;
 
     set_by_lua_block $skip {
-        local admin = string.find(ngx.var.request_uri, "^/admin"); 
+        local admin = string.find(ngx.var.request_uri, "^/admin");
 
         return admin and 1 or 0;
-    }   
+    }
 
     set $key "$scheme://$host$request_uri";
     set_escape_uri $escaped_key $key;
@@ -27,21 +27,21 @@ location ~ ^/app\.php(/|$) {
 
     more_set_headers 'X-Cache $srcache_fetch_status';
 
-    fastcgi_pass unix:/var/run/php/php7.1-fpm.sock;
+    fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
     fastcgi_split_path_info ^(.+\.php)(/.*)$;
     include fastcgi_params;
     fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
-    fastcgi_param DOCUMENT_ROOT $realpath_root;	
+    fastcgi_param DOCUMENT_ROOT $realpath_root;
 }
 
-# Punto de entrada, para entorno DEV, con cache desactivada    
+# Punto de entrada, para entorno DEV, con cache desactivada
 location ~ ^/app_dev\.php(/|$) {
-    fastcgi_pass unix:/var/run/php/php7.1-fpm.sock;
+    fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
     fastcgi_split_path_info ^(.+\.php)(/.*)$;
     include fastcgi_params;
     fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
-    fastcgi_param DOCUMENT_ROOT $realpath_root;	
-}    
+    fastcgi_param DOCUMENT_ROOT $realpath_root;
+}
 
 
 # Guarda la response en cache
@@ -63,11 +63,11 @@ location /__store {
 
                     if tags then
 
-                            red:select(1);  
-                            for tag in string.gmatch(tags..",", '([^,]*),') do 
-                                    red:sadd(tag, ngx.var.key);	  
-                                    red:persist(tag); 
-                            end	
+                            red:select(1);
+                            for tag in string.gmatch(tags..",", '([^,]*),') do
+                                    red:sadd(tag, ngx.var.key);
+                                    red:persist(tag);
+                            end
                     end
 
             end
@@ -83,7 +83,7 @@ location /__store {
             end
     }
 
-} 
+}
 
 # Busca la url en cache
 location /__fetch {
