@@ -33,3 +33,4 @@ openresty_common_conf:
   - common/pagespeed
   - common/php
   - common/static
+  - common/htpasswd

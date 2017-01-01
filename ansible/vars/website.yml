@@ -10,6 +10,7 @@ server_extra_packages:
     - php7.0-mbstring    
     - php7.0-mysql   
     - postfix
+    - apache2-utils
   
 server_directories: 
     - /deploy/backup/website/redis
@@ -65,7 +66,7 @@ openresty_modules:
   
 openresty_sites:   
   - server_name: site1.planb.int
-    root: /deploy/projects/planB/sites/site1/web 
+    root: /deploy/projects/planB/public
     php_socket: "{{ php_socket }}"
     template: bolt
     

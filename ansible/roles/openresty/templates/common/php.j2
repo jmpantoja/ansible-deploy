@@ -96,26 +96,34 @@ location /__fetch {
 location ~ /__purge {
     include common/acl.conf;
 
-    if ( $request_method !~ ^(PURGE)$ ) {
-            return 405;
-    }
-
-    default_type "text/plain";
+    default_type "application/json";
 
     content_by_lua_block {
             local redis = require "resty.redis"
+            local cjson = require "cjson"
+
             red = redis:new();
             local ok, err = red:connect("127.0.0.1", 6379)
+
+            local arr = {};
+
 
             if ok then
                 red:select(1);
                 if ngx.var.query_string then
-
+                        local index = 0;
                         for tag in string.gmatch(ngx.var.query_string..",", '([^,]*),') do
+                                index = index +1;
+                                arr[index] = {};
+                                arr[index]['tag'] = tag;
+                                arr[index]['deleted'] = {};
                                 local members = red:smembers(tag);
+                                red:del(tag);
 
                                 ngx.status = 200;
-                                for _, value in pairs(members) do
+
+                                for key, value in pairs(members) do
+                                        arr[index]['deleted'][key]= value;
                                         red:select(0);
                                         red:del(value);
                                 end
@@ -123,5 +131,8 @@ location ~ /__purge {
                         end
                 end
             end
+
+            ngx.say(cjson.encode(arr));
     }
+
 }
