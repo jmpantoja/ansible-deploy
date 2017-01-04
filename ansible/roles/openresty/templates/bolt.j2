@@ -1,7 +1,7 @@
 server {
     listen 81;
 
-    server_name cdn.{{ item.server_name }};
+    server_name cdn1.{{ item.server_name }};
     root {{ item.root }};
 
     access_log /var/log/nginx/{{ item.server_name }}-access.log;
@@ -9,6 +9,31 @@ server {
 
     include common/static.conf;
 }
+
+server {
+    listen 81;
+
+    server_name cdn2.{{ item.server_name }};
+    root {{ item.root }};
+
+    access_log /var/log/nginx/{{ item.server_name }}-access.log;
+    error_log /var/log/nginx/{{ item.server_name }}-error.log debug;
+
+    include common/static.conf;
+}
+
+server {
+    listen 81;
+
+    server_name cdn3.{{ item.server_name }};
+    root {{ item.root }};
+
+    access_log /var/log/nginx/{{ item.server_name }}-access.log;
+    error_log /var/log/nginx/{{ item.server_name }}-error.log debug;
+
+    include common/static.conf;
+}
+
 
 server {
     listen 81;
