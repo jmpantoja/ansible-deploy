@@ -1,5 +1,13 @@
 index app.php;
 
+location ~ ^/admin {
+    try_files @blank /app.php?$query_string;
+}
+
+location ~ ^/async {
+    try_files @blank /app.php?$query_string;
+}
+
 # Todo lo que no ha sido capturado por otro location
 location / {
     try_files @blank /app.php?$query_string;
