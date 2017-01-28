@@ -55,7 +55,7 @@ location ~ /thumbs/(small|medium|large|xlarge|xxlarge)/col-(1|2|3|4|5|6|7|8|9|10
 }
 
 # Limitar solo a lo que nos pida el /admin de bolt
-location ~ /thumbs/(54x40|54x41|100x100|200x150|1000x800)(b|c|r)/(.*) {
+location ~ /thumbs/(54x40|54x41|60x40|100x100|200x150|1000x800)(b|c|r)?/(.*) {
 
   	error_page 403 415 @noproxy;
 
