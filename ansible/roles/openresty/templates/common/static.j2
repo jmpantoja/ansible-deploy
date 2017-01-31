@@ -125,12 +125,25 @@ location ~* ^.+\.(jpg|jpeg|gif|png|ico)$ {
     add_header Cache-Control "public, mustrevalidate, proxy-revalidate";
 }
 
+#Fuentes
+location ~* \.(eot|ttf|woff|woff2)$ {
+    access_log off;
+    log_not_found off;
+    expires 30d;
+    add_header Pragma public;
+    add_header Cache-Control "public, mustrevalidate, proxy-revalidate";
+    add_header Access-Control-Allow-Origin *;
+}
+
+
 #Resto de archivos
-location ~* ^.+\.(ogg|ogv|svg|svgz|eot|otf|woff|woff2|mp4|ttf|rss|atom|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)$ {
+location ~* ^.+\.(ogg|ogv|svg|svgz|otf|mp4|ttf|rss|atom|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)$ {
     access_log off;
     log_not_found off;
     expires 30d;
     add_header Pragma public;
     add_header Cache-Control "public, mustrevalidate, proxy-revalidate";
 }
+
+
 
