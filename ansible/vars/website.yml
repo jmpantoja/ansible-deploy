@@ -69,6 +69,11 @@ openresty_sites:
     root: /deploy/projects/planB/public
     php_socket: "{{ php_socket }}"
     template: bolt
+
+  - server_name: sonata.planb.int
+    root: /deploy/projects/planb-project-skeleton/web
+    php_socket: "{{ php_socket }}"
+    template: symfony
     
   - server_name: showroom.planb.int
     root: /deploy/projects/showroom/dist/   
@@ -92,16 +97,21 @@ mysql_databases:
     encoding: utf8
     collation: utf8_general_ci
 
+  - name: sonata
+    encoding: utf8
+    collation: utf8_general_ci
+
 mysql_users:
   - name: site1
     host: "%"
     password: m1sql
     priv: "site1.*:ALL"
-    
-  - name: phpci
+
+  - name: sonata
     host: "%"
     password: m1sql
-    priv: "phpci.*:ALL"
+    priv: "sonata.*:ALL"
+    
     
     
     
