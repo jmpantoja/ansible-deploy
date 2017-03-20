@@ -8,6 +8,10 @@
 - debug: msg={{ item }}
   with_items: "{{ php7_packages }}"
   when: php_version == 7
+  
+- debug: msg={{ item }}
+  with_items: "{{ php71_packages }}"
+  when: php_version == 71
 
 - debug: msg={{ item }}
   with_items: "{{ php56_packages }}"
@@ -16,9 +20,11 @@
 - set_fact: php_packages={{ php7_packages }} 
   when: php_version == 7 
 
+- set_fact: php_packages={{ php71_packages }} 
+  when: php_version == 71 
+
 - set_fact: php_packages={{ php56_packages }} 
   when: php_version == 56 
-
 
 - name: install php packages
   apt: name={{ item }} state=present

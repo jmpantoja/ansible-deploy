@@ -3,21 +3,15 @@ server_repositories:
     - ppa:ondrej/php    
 
 server_extra_packages: 
-    - php7.0-fpm   
-    - php7.0-cli
-    - php7.0-intl   
-    - php7.0-gd
-    - php7.0-mbstring    
-    - php7.0-mysql   
     - postfix
     - apache2-utils
   
-server_directories: 
-    - /deploy/backup/website/redis
+#server_directories: 
+#    - /deploy/backup/website/redis
     
-php_version: 7    
+php_version: 71
   
-php_socket: unix:/var/run/php/php7.0-fpm.sock
+php_socket: unix:/var/run/php/php7.1-fpm.sock
 #php_socket: unix:/var/run/php5-fpm.sock
 
 php_webserver_daemon: nginx
@@ -34,7 +28,7 @@ php_xdebug_max_nesting_level: 256
 
 php_xdebug_idekey: netbeans-xdebug
 
-redis_dbdir: /deploy/backup/website/redis
+redis_dbdir: /tmp
 redis_databases: 8
 
 nodejs_version: "5.x"
@@ -65,13 +59,8 @@ openresty_modules:
   - md5=/usr/include/openssl
   
 openresty_sites:   
-  - server_name: site1.planb.int
-    root: /deploy/projects/planB/public
-    php_socket: "{{ php_socket }}"
-    template: bolt
-
-  - server_name: sonata.planb.int
-    root: /deploy/projects/planb-project-skeleton/web
+  - server_name: cms.planb.int
+    root: /deploy/projects/planb-cms-project-skeleton/web
     php_socket: "{{ php_socket }}"
     template: symfony
     
@@ -89,28 +78,15 @@ mysql_enabled_on_startup: yes
 mysql_root_password: admin
 
 mysql_databases:
-  - name: phpci
-    encoding: utf8
-    collation: utf8_general_ci
-    
-  - name: site1
-    encoding: utf8
-    collation: utf8_general_ci
-
-  - name: sonata
+  - name: cms
     encoding: utf8
     collation: utf8_general_ci
 
 mysql_users:
-  - name: site1
+  - name: cms
     host: "%"
-    password: m1sql
-    priv: "site1.*:ALL"
-
-  - name: sonata
-    host: "%"
-    password: m1sql
-    priv: "sonata.*:ALL"
+    password: cms
+    priv: "cms.*:ALL"
     
     
     

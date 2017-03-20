@@ -35,7 +35,7 @@ location ~ ^/app\.php(/|$) {
 
     more_set_headers 'X-Cache $srcache_fetch_status';
 
-    fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+    fastcgi_pass {{php_socket}};
     fastcgi_split_path_info ^(.+\.php)(/.*)$;
     include fastcgi_params;
     fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
@@ -44,7 +44,7 @@ location ~ ^/app\.php(/|$) {
 
 # Punto de entrada, para entorno DEV, con cache desactivada
 location ~ ^/app_dev\.php(/|$) {
-    fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+    fastcgi_pass {{php_socket}};
     fastcgi_split_path_info ^(.+\.php)(/.*)$;
     include fastcgi_params;
     fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
