@@ -22,10 +22,10 @@
           
   roles:
     - { role: commons }
-    - { role: filebeat }
+#    - { role: filebeat }
     - { role: openresty }    
-    - { role: geerlingguy.java }
-    - { role: geerlingguy.elasticsearch }
+#    - { role: geerlingguy.java }
+#    - { role: geerlingguy.elasticsearch }
     - { role: geerlingguy.varnish }
     - { role: geerlingguy.mysql }
     - { role: geerlingguy.redis }
@@ -36,4 +36,3 @@
     - { role: geerlingguy.blackfire }
     - { role: geerlingguy.nodejs }
     
-

@@ -75,13 +75,15 @@ varnish_default_vcl_template_path: templates/varnish/default.vcl.j2
 
 mysql_enabled_on_startup: yes
 
-mysql_root_password: admin
+mysql_root_home: /root
+mysql_root_username: root
+mysql_root_password: root
 
 mysql_databases:
   - name: cms
     encoding: utf8
     collation: utf8_general_ci
-
+   
 mysql_users:
   - name: cms
     host: "%"
@@ -89,5 +91,13 @@ mysql_users:
     priv: "cms.*:ALL"
     
     
-    
+mysql_server_id: "1"
+mysql_replication_role: 'master'
+mysql_replication_master: 'master'
+
+mysql_replication_user:
+  name: master
+  host: "%"
+  password: cms
+  priv: "cms.*:ALL"
     

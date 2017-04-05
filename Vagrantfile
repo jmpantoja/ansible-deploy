@@ -94,4 +94,35 @@ Vagrant.configure("2") do |config|
     end
   end  
   
+  config.vm.define "replica", autostart: false do |replica|
+
+    replica.vm.provider :virtualbox do |v|
+        v.name = "replica"
+        v.customize [
+            "modifyvm", :id,
+            "--name", "replica",
+            "--memory", 1024,
+            "--natdnshostresolver1", "on",
+            "--cpus", 1,
+        ]
+    end  
+ 
+    replica.vm.box = "ubuntu/trusty64"
+    replica.vm.box_check_update = true
+    replica.vm.hostname = "replica"
+    
+    replica.vm.network "private_network", ip: "192.168.50.60"
+    replica.vm.network "public_network", use_dhcp_assigned_default_route: true
+	
+    replica.vm.synced_folder ".", "/vagrant", type: "nfs"
+    replica.vm.synced_folder "/deploy", "/deploy", type: "nfs", mount_options: ['rw', 'vers=3', 'tcp', 'fsc' ,'actimeo=2']
+
+    replica.vm.provision "ansible" do |ansible|
+	  ansible.sudo = true
+      ansible.playbook = "ansible/playbook.yml"
+      ansible.inventory_path = "./ansible/inventory"
+      ansible.limit = "replica"
+    end
+  end    
+  
 end
